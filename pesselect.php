@@ -1,0 +1,121 @@
+<?php
+session_start();
+include('verifica_login.php');
+include('connect.php');
+$sql = "SELECT p.id id, p.nome nome, p.tipo tipo, p.cep cep, p.logradouro logradouro, p.numero numero, p.bairro bairro, p.cidade cidade, p.uf uf, 
+p.email email, p.telefone telefone, p.complemento complemento, DATE_FORMAT(p.datanascimento, '%d/%m/%Y') datanascimento, DATE_FORMAT(p.databatizado, '%d/%m/%Y') databatizado FROM ip_pessoa p ORDER BY 1";
+$pesqnome = '';
+if (isset($_POST['submit'])) {
+    $pesqnome = $_POST['pesqnome'];
+    $sql = "SELECT p.id id, p.nome nome, p.tipo tipo, p.cep cep, p.logradouro logradouro, p.numero numero, p.bairro bairro, p.cidade cidade, p.uf uf, 
+    p.email email, p.telefone telefone, p.complemento complemento, DATE_FORMAT(p.datanascimento, '%d/%m/%Y') datanascimento, DATE_FORMAT(p.databatizado, '%d/%m/%Y') databatizado 
+    FROM ip_pessoa p
+    WHERE nome LIKE '%$pesqnome%'
+    ORDER BY 1";
+}
+?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="shortcut icon" href="imagens/favicon.ico" type="image/x-icon" />
+    <title>Pessoas</title>
+</head>
+
+<body
+    style="background-image: url('imagens/background.jpg'); background-attachment: fixed; background-size: 100%; background-repeat: no-repeat; background-color: black;">
+    <div class="row" style="background-color: black; margin-bottom: 30px; color: white;">
+        <div class="col" style="padding: 10px; left: 20px;">
+            <h2>Usuário:
+                <?php echo $_SESSION['nome']; ?>
+            </h2>
+        </div>
+        <div class="col text-right" style="padding: 19px; right: 20px;">
+            <a href="logout.php"><button type="button" class="btn btn-danger"
+                    style="border-radius: 20px;">SAIR</button></a>
+        </div>
+    </div>
+    <form method="post">
+        <div class="container" style="margin-top: 40px;">
+            <div class="jumbotron text-center">
+                <h1>Consulta Pessoas</h1>
+                <hr>
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-7 text-right">
+                        <label for="">Nome Parcial:</label>
+                        <input type="text" name="pesqnome" style="width: 300px; padding: 9px;"
+                            placeholder="João..." value="<?php echo $pesqnome ?>">
+                    </div>
+                    <div class="col text-left">
+                        <button type="submit" name="submit" style="width: 150px; padding: 9px;"
+                            class="btn btn-dark">CONSULTA</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 35px;">
+                    <div class="col-5 text-right">
+                        <a href="menu.php"><button type="button" style="padding: 7px; width: 100px;"
+                                class="btn btn-secondary">MENU</button></a>
+                    </div>
+                    <div class="col">
+                        <a href="pesinsert.php"><button type="button" style="padding: 7px; width: 100px;"
+                                class="btn btn-secondary">INCLUSÃO</button></a>
+                    </div>
+                    <div class="col-5 text-left">
+                        <a href="pesselect.php"><button type="button" style="padding: 7px; width: 100px;"
+                                class="btn btn-secondary">LIMPAR</button></a>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-bordered" style="background-color: white; opacity: 94%; text-align: center;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">E-Mail</th>
+                        <th scope="col">Telefone</th>
+                        <th scope="col">Detalhes</th>
+                        <th scope="col">Operações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $result = mysqli_query($con, $sql);
+                    if ($result) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>
+              <td>" . $row['id'] . " </td>
+              <td>" . $row['nome'] . " </td>
+              <td>" . $row['email'] . " </td>
+              <td>" . $row['telefone'] . " </td>
+            <td>
+            <a href='pesselected.php?selectid={$row['id']}' style='color:white;'>
+                        <button type='button' class='btn btn-secondary'> 
+                        Ver Mais</button></a>
+            </td>
+            <td>
+                        <a href='pesupdated.php?updateid={$row['id']}' style='color:white;'>
+                        <button type='button' class='btn btn-dark'> 
+                        Alterar</button></a>
+                        <a href='pesdeleted.php?deleteid={$row['id']}' style='color:white;'>
+                        <button type='button' class='btn btn-dark'> 
+                        Excluir</button></a>
+            </td>
+          </tr>";
+                        }
+                    }
+                    ?>
+
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+
+</html>

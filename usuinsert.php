@@ -1,0 +1,95 @@
+<?php
+session_start();
+include('verifica_login.php');
+include('connect.php');
+if (isset($_POST['submit'])) {
+    $nome = $_POST['nome'];
+    $email = $_POST['email'];
+    $master = $_POST['master'];
+    $sql = 'insert into usuario (nome, email, master, senha) values ("' . $nome . '","' . $email . '","' . $master . '","' . $senha . '")';
+    echo $sql;
+    // executar o sql
+    $result = mysqli_query($con, $sql);
+    // voltar para o menu
+    if ($result) {
+        header('location: ususelect.php');
+    } else {
+        die(mysqli_error($con));
+    }
+}
+if ($_SESSION['master'] == "n") {
+    session_destroy();
+}
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="shortcut icon" href="imagens/favicon.ico" type="image/x-icon" />
+    <title>Incluir Usuário</title>
+</head>
+
+<body
+    style="background-image: url('imagens/backin.webp'); background-attachment: fixed; background-size: 100%; background-repeat: no-repeat; background-color: black;">
+    <div class="row" style="background-color: black; margin-bottom: 30px; color: white;">
+        <div class="col" style="padding: 10px; left: 20px;">
+            <h2>Usuário:
+                <?php echo $_SESSION['nome']; ?>
+            </h2>
+        </div>
+        <div class="col text-right" style="padding: 19px; right: 20px;">
+            <a href="logout.php"><button type="button" class="btn btn-danger"
+                    style="border-radius: 20px;">SAIR</button></a>
+        </div>
+    </div>
+    <div class="container" style="margin-top: 30px; background-color: white;">
+        <h1>Incluir Usuário</h1>
+        <hr>
+        <form action="" method="post" style="margin-top: 20px;">
+            <h4>Dados do Usuário:</h4>
+            <div class="form-group">
+                <div class="row" style="margin-top: 30px;">
+                    <div class="col">
+                        <label for="">Nome:</label>
+                        <input type="text" name="nome" class="form-control" style="width: 400px; padding: 9px;">
+                    </div>
+                    <div class="col">
+                        <label for="">Administrador:</label>
+                        <select class="form-control" style="width: 80px; padding: 9px;" name="master">
+                            <option value="s">SIM</option>
+                            <option value="n">NÃO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="">Endereço de E-mail:</label>
+                        <input type="email" name="email" class="form-control" style="width: 400px; padding: 9px;">
+                    </div>
+                    <div class="col">
+                        <label for="">Senha:</label>
+                        <input type="password" name="senha" class="form-control" style="width: 200px; padding: 9px;">
+                    </div>
+                </div>
+            </div>
+            <div class="container" style="margin-top: 40px;">
+                <div class="row">
+                    <div class="col" style="margin-bottom: 30px;">
+                        <a href="ususelect.php">
+                            <button type="button" style="padding: 9px; width: 100px;"
+                                class="btn btn-dark">Voltar</button></a>
+                        <button type="submit" name="submit" style="padding: 9px; width: 100px;"
+                            class="btn btn-secondary">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
