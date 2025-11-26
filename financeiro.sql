@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Tempo de geração: 17-Ago-2023 às 02:16
--- Versão do servidor: 10.4.25-MariaDB
--- versão do PHP: 8.1.10
+-- Host: localhost
+-- Tempo de geração: 26/11/2025 às 04:40
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,61 +18,82 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `financeiro`
+-- Banco de dados: `financmorais`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ip_entrada`
+-- Estrutura para tabela `empresa`
 --
 
-CREATE TABLE `ip_entrada` (
+CREATE TABLE `empresa` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `empresa`
+--
+
+INSERT INTO `empresa` (`id`, `nome`) VALUES
+(2, 'SUPERAR'),
+(3, 'SandroTechs'),
+(4, 'NASA'),
+(6, 'Bar do João');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `pm_entrada`
+--
+
+CREATE TABLE `pm_entrada` (
   `id` int(11) NOT NULL,
   `idpessoa` int(11) NOT NULL,
   `valor` decimal(10,2) NOT NULL,
   `dataentrada` date NOT NULL,
   `datadocumento` date NOT NULL,
   `documento` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `ip_entrada`
+-- Despejando dados para a tabela `pm_entrada`
 --
 
-INSERT INTO `ip_entrada` (`id`, `idpessoa`, `valor`, `dataentrada`, `datadocumento`, `documento`) VALUES
-(3, 5, '1000.90', '1111-01-01', '1100-01-01', 'fill'),
-(11, 2, '9000.50', '6565-04-05', '1000-01-01', 'fill'),
-(12, 8, '10.51', '1111-10-10', '1000-10-10', 'ççll');
+INSERT INTO `pm_entrada` (`id`, `idpessoa`, `valor`, `dataentrada`, `datadocumento`, `documento`) VALUES
+(3, 5, 1000.90, '1111-01-01', '1100-01-01', 'fill'),
+(11, 2, 9000.50, '6565-04-05', '1000-01-01', 'fill'),
+(12, 8, 10.51, '1111-10-10', '1000-10-10', 'ççll');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ip_fornecedor`
+-- Estrutura para tabela `pm_fornecedor`
 --
 
-CREATE TABLE `ip_fornecedor` (
+CREATE TABLE `pm_fornecedor` (
   `id` int(11) NOT NULL,
   `nome` varchar(50) NOT NULL,
   `telefone` varchar(50) NOT NULL,
   `observacao` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `ip_fornecedor`
+-- Despejando dados para a tabela `pm_fornecedor`
 --
 
-INSERT INTO `ip_fornecedor` (`id`, `nome`, `telefone`, `observacao`) VALUES
+INSERT INTO `pm_fornecedor` (`id`, `nome`, `telefone`, `observacao`) VALUES
 (1, 'name', '111', 'observacaoss'),
 (2, 'JONAS', '55664499', 'Gente boa, mas preço caroooooooooooooooooooooo');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ip_pessoa`
+-- Estrutura para tabela `pm_pessoa`
 --
 
-CREATE TABLE `ip_pessoa` (
+CREATE TABLE `pm_pessoa` (
   `id` int(11) NOT NULL,
   `nome` varchar(50) NOT NULL,
   `tipo` int(1) NOT NULL,
@@ -87,23 +108,23 @@ CREATE TABLE `ip_pessoa` (
   `complemento` varchar(50) NOT NULL,
   `datanascimento` date NOT NULL,
   `databatizado` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `ip_pessoa`
+-- Despejando dados para a tabela `pm_pessoa`
 --
 
-INSERT INTO `ip_pessoa` (`id`, `nome`, `tipo`, `cep`, `logradouro`, `numero`, `bairro`, `cidade`, `uf`, `email`, `telefone`, `complemento`, `datanascimento`, `databatizado`) VALUES
+INSERT INTO `pm_pessoa` (`id`, `nome`, `tipo`, `cep`, `logradouro`, `numero`, `bairro`, `cidade`, `uf`, `email`, `telefone`, `complemento`, `datanascimento`, `databatizado`) VALUES
 (5, 'PSFIVE', 2, '35030330', 'Rua Marechal Floriano', '175', 'Lourdes', 'Governador Valadares', 'MG', 'ARROBA@GEMAIL.COM', '88035817', 'NUTELLA', '2023-03-30', '2023-04-06'),
 (8, 'Xbox360', 1, '35030330', 'Rua Marechal Floriano', '175', 'Lourdes', 'Governador Valadares', 'MG', 'dsajk@gmail.com', '88035817', 'NUTELLA', '1000-01-01', '2121-01-01');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `ip_saida`
+-- Estrutura para tabela `pm_saida`
 --
 
-CREATE TABLE `ip_saida` (
+CREATE TABLE `pm_saida` (
   `id` int(11) NOT NULL,
   `idfornecedor` int(11) NOT NULL,
   `valorpagar` decimal(10,2) NOT NULL,
@@ -111,20 +132,20 @@ CREATE TABLE `ip_saida` (
   `observacao` varchar(50) NOT NULL,
   `valorpago` decimal(10,2) NOT NULL,
   `datapago` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `ip_saida`
+-- Despejando dados para a tabela `pm_saida`
 --
 
-INSERT INTO `ip_saida` (`id`, `idfornecedor`, `valorpagar`, `datapagar`, `observacao`, `valorpago`, `datapago`) VALUES
-(1, 2, '1000.00', '1011-01-01', 'Calotero', '760.01', '1000-10-01'),
-(3, 1, '450.00', '2020-01-05', 'Quase pg', '300.00', '2020-01-03');
+INSERT INTO `pm_saida` (`id`, `idfornecedor`, `valorpagar`, `datapagar`, `observacao`, `valorpago`, `datapago`) VALUES
+(1, 2, 1000.00, '1011-01-01', 'Calotero', 760.01, '1000-10-01'),
+(3, 1, 450.00, '2020-01-05', 'Quase pg', 300.00, '2020-01-03');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuario`
+-- Estrutura para tabela `usuario`
 --
 
 CREATE TABLE `usuario` (
@@ -134,10 +155,10 @@ CREATE TABLE `usuario` (
   `senha` varchar(20) NOT NULL,
   `master` varchar(1) NOT NULL,
   `foto` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `usuario`
+-- Despejando dados para a tabela `usuario`
 --
 
 INSERT INTO `usuario` (`id`, `nome`, `email`, `senha`, `master`, `foto`) VALUES
@@ -149,63 +170,75 @@ INSERT INTO `usuario` (`id`, `nome`, `email`, `senha`, `master`, `foto`) VALUES
 --
 
 --
--- Índices para tabela `ip_entrada`
+-- Índices de tabela `empresa`
 --
-ALTER TABLE `ip_entrada`
+ALTER TABLE `empresa`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `pm_entrada`
+--
+ALTER TABLE `pm_entrada`
   ADD PRIMARY KEY (`id`),
   ADD KEY `pessoa_entrada` (`idpessoa`);
 
 --
--- Índices para tabela `ip_fornecedor`
+-- Índices de tabela `pm_fornecedor`
 --
-ALTER TABLE `ip_fornecedor`
+ALTER TABLE `pm_fornecedor`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices para tabela `ip_pessoa`
+-- Índices de tabela `pm_pessoa`
 --
-ALTER TABLE `ip_pessoa`
+ALTER TABLE `pm_pessoa`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices para tabela `ip_saida`
+-- Índices de tabela `pm_saida`
 --
-ALTER TABLE `ip_saida`
+ALTER TABLE `pm_saida`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idfornecedor` (`idfornecedor`);
 
 --
--- Índices para tabela `usuario`
+-- Índices de tabela `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT de tabelas despejadas
+-- AUTO_INCREMENT para tabelas despejadas
 --
 
 --
--- AUTO_INCREMENT de tabela `ip_entrada`
+-- AUTO_INCREMENT de tabela `empresa`
 --
-ALTER TABLE `ip_entrada`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT de tabela `ip_fornecedor`
---
-ALTER TABLE `ip_fornecedor`
+ALTER TABLE `empresa`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de tabela `ip_pessoa`
+-- AUTO_INCREMENT de tabela `pm_entrada`
 --
-ALTER TABLE `ip_pessoa`
+ALTER TABLE `pm_entrada`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT de tabela `pm_fornecedor`
+--
+ALTER TABLE `pm_fornecedor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de tabela `pm_pessoa`
+--
+ALTER TABLE `pm_pessoa`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT de tabela `ip_saida`
+-- AUTO_INCREMENT de tabela `pm_saida`
 --
-ALTER TABLE `ip_saida`
+ALTER TABLE `pm_saida`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
@@ -215,14 +248,14 @@ ALTER TABLE `usuario`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- Restrições para despejos de tabelas
+-- Restrições para tabelas despejadas
 --
 
 --
--- Limitadores para a tabela `ip_saida`
+-- Restrições para tabelas `pm_saida`
 --
-ALTER TABLE `ip_saida`
-  ADD CONSTRAINT `idfornecedor` FOREIGN KEY (`idfornecedor`) REFERENCES `ip_fornecedor` (`id`);
+ALTER TABLE `pm_saida`
+  ADD CONSTRAINT `idfornecedor` FOREIGN KEY (`idfornecedor`) REFERENCES `pm_fornecedor` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

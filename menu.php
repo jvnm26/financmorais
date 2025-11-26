@@ -84,6 +84,10 @@ include('verifica_login.php');
                 <a href="teste.php"><button type="button" style="width: 200px; padding: 15px;"
                             class="btn btn-dark"><h5>teste</h5></button></a><br>
             </div>
+            <div class="col" style="margin-bottom: 25px;">
+                <a href="empselect.php"><button type="button" style="width: 200px; padding: 15px;"
+                            class="btn btn-dark"><h5>EMPRESAS</h5></button></a><br>
+            </div>
         </div>
     </div>
 </body>

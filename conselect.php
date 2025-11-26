@@ -2,11 +2,11 @@
 session_start();
 include('verifica_login.php');
 include('connect.php');
-$sql = "SELECT 'Entrada' tipo, p.nome nome, replace(e.valor, '.', ',') valor, '-' valorpago, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') data, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.id id FROM ip_pessoa p INNER JOIN ip_entrada e ON p.id = e.idpessoa
+$sql = "SELECT 'Entrada' tipo, p.nome nome, replace(e.valor, '.', ',') valor, '-' valorpago, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') data, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.id id FROM pm_pessoa p INNER JOIN pm_entrada e ON p.id = e.idpessoa
 UNION ALL
-SELECT 'Saída' tipo, f.nome nome, replace(s.valorpagar, '.', ',') valor, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapagar, '%d/%m/%Y') data, '-' datadocumento, s.id id FROM ip_fornecedor f INNER JOIN ip_saida s ON f.id = s.idfornecedor";
-$sql2 = "SELECT SUM(s.valorpago) totalsaida FROM ip_saida s";
-$sql3 = "SELECT SUM(e.valor) totalentrada FROM ip_entrada e";
+SELECT 'Saída' tipo, f.nome nome, replace(s.valorpagar, '.', ',') valor, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapagar, '%d/%m/%Y') data, '-' datadocumento, s.id id FROM pm_fornecedor f INNER JOIN pm_saida s ON f.id = s.idfornecedor";
+$sql2 = "SELECT SUM(s.valorpago) totalsaida FROM pm_saida s";
+$sql3 = "SELECT SUM(e.valor) totalentrada FROM pm_entrada e";
 $result = mysqli_query($con, $sql2);
 $row = mysqli_fetch_assoc($result);
 $result2 = mysqli_query($con, $sql3);
@@ -69,54 +69,54 @@ if (isset($_POST['submit'])) {
     if ($filtro == "E" || $filtro == "A") {
         $nomepessoa = "p.nome LIKE '%" . $pesqnome . "%' AND e.valor BETWEEN $pesqvalor1 AND $pesqvalor2 AND e.dataentrada BETWEEN '$pesqdata1' AND '$pesqdata2' AND e.datadocumento BETWEEN '$pesqdatadocumento1' AND '$pesqdatadocumento2'";
     }
-    $sqlentrada = "SELECT 'Entrada' tipo, p.nome nome, replace(e.valor, '.', ',') valor, '-' valorpago, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') data, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.id id FROM ip_pessoa p INNER JOIN ip_entrada e ON p.id = e.idpessoa WHERE " . $nomepessoa;
-    $sqlsaida = "SELECT 'Saída' tipo, f.nome nome, replace(s.valorpagar, '.', ',') valor, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapagar, '%d/%m/%Y') data, '-' datadocumento, s.id id FROM ip_fornecedor f INNER JOIN ip_saida s ON f.id = s.idfornecedor WHERE " . $nomefornecedor;
+    $sqlentrada = "SELECT 'Entrada' tipo, p.nome nome, replace(e.valor, '.', ',') valor, '-' valorpago, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') data, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.id id FROM pm_pessoa p INNER JOIN pm_entrada e ON p.id = e.idpessoa WHERE " . $nomepessoa;
+    $sqlsaida = "SELECT 'Saída' tipo, f.nome nome, replace(s.valorpagar, '.', ',') valor, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapagar, '%d/%m/%Y') data, '-' datadocumento, s.id id FROM pm_fornecedor f INNER JOIN pm_saida s ON f.id = s.idfornecedor WHERE " . $nomefornecedor;
     $nomefornecedores = "f.nome LIKE '%" . $pesqnome . "%' AND s.valorpagar BETWEEN $pesqvalor1 AND $pesqvalor2 AND s.valorpago BETWEEN $pesqvalorpago1 AND $pesqvalorpago2 AND s.datapagar BETWEEN '$pesqdata1' AND '$pesqdata2'";
     $nomepessoas = "p.nome LIKE '%" . $pesqnome . "%' AND e.valor BETWEEN $pesqvalor1 AND $pesqvalor2 AND e.dataentrada BETWEEN '$pesqdata1' AND '$pesqdata2' AND e.datadocumento BETWEEN '$pesqdatadocumento1' AND '$pesqdatadocumento2'";
     $totalsaidas = '0';
     $totalentradas = '0';
     if ($filtro == "A") {
         $sql = $sqlsaida . " union all " . $sqlentrada;
-        $sqltotalentrada = "SELECT SUM(e.valor) totalentrada FROM ip_pessoa p INNER JOIN ip_entrada e ON p.id = e.idpessoa WHERE " . $nomepessoas;
+        $sqltotalentrada = "SELECT SUM(e.valor) totalentrada FROM pm_pessoa p INNER JOIN pm_entrada e ON p.id = e.idpessoa WHERE " . $nomepessoas;
         $resultadoentrada = mysqli_query($con, $sqltotalentrada);
         $rowentrada = mysqli_fetch_assoc($resultadoentrada);
         $totalentradas = $rowentrada['totalentrada'];
-        $sqltotalsaida = "SELECT SUM(s.valorpago) totalsaida FROM ip_fornecedor f INNER JOIN ip_saida s ON f.id = s.idfornecedor WHERE " . $nomefornecedores;
+        $sqltotalsaida = "SELECT SUM(s.valorpago) totalsaida FROM pm_fornecedor f INNER JOIN pm_saida s ON f.id = s.idfornecedor WHERE " . $nomefornecedores;
         $resultsaida = mysqli_query($con, $sqltotalsaida);
         $rowsaida = mysqli_fetch_assoc($resultsaida);
         $totalsaidas = $rowsaida['totalsaida'];
-        $sqlsaldoanterior = "SELECT SUM(e.valor) somasaldoe FROM ip_entrada e WHERE e.dataentrada < '$pesqdata1'";
+        $sqlsaldoanterior = "SELECT SUM(e.valor) somasaldoe FROM pm_entrada e WHERE e.dataentrada < '$pesqdata1'";
         $resultadosaldo = mysqli_query($con, $sqlsaldoanterior);
         $rowsaldo = mysqli_fetch_assoc($resultadosaldo);
-        $sqlsaldoanteriorsaida = "SELECT SUM(s.valorpago) somasaldos FROM ip_saida s WHERE s.datapagar < '$pesqdata1'";
+        $sqlsaldoanteriorsaida = "SELECT SUM(s.valorpago) somasaldos FROM pm_saida s WHERE s.datapagar < '$pesqdata1'";
         $resultadosaldosaida = mysqli_query($con, $sqlsaldoanteriorsaida);
         $rowsaldosaida = mysqli_fetch_assoc($resultadosaldosaida);
         $saldoanterior = $rowsaldo['somasaldoe'] - $rowsaldosaida['somasaldos'];
     }
     if ($filtro == "S") {
         $sql = $sqlsaida;
-        $sqltotalsaida = "SELECT SUM(s.valorpago) totalsaida FROM ip_fornecedor f INNER JOIN ip_saida s ON f.id = s.idfornecedor WHERE " . $nomefornecedores;
+        $sqltotalsaida = "SELECT SUM(s.valorpago) totalsaida FROM pm_fornecedor f INNER JOIN pm_saida s ON f.id = s.idfornecedor WHERE " . $nomefornecedores;
         $resultsaida = mysqli_query($con, $sqltotalsaida);
         $rowsaida = mysqli_fetch_assoc($resultsaida);
         $totalsaidas = $rowsaida['totalsaida'];
-        $sqlsaldoanterior = "SELECT SUM(e.valor) somasaldoe FROM ip_entrada e WHERE e.dataentrada < '$pesqdata1'";
+        $sqlsaldoanterior = "SELECT SUM(e.valor) somasaldoe FROM pm_entrada e WHERE e.dataentrada < '$pesqdata1'";
         $resultadosaldo = mysqli_query($con, $sqlsaldoanterior);
         $rowsaldo = mysqli_fetch_assoc($resultadosaldo);
-        $sqlsaldoanteriorsaida = "SELECT SUM(s.valorpago) somasaldos FROM ip_saida s WHERE s.datapagar < '$pesqdata1'";
+        $sqlsaldoanteriorsaida = "SELECT SUM(s.valorpago) somasaldos FROM pm_saida s WHERE s.datapagar < '$pesqdata1'";
         $resultadosaldosaida = mysqli_query($con, $sqlsaldoanteriorsaida);
         $rowsaldosaida = mysqli_fetch_assoc($resultadosaldosaida);
         $saldoanterior = $rowsaldo['somasaldoe'] - $rowsaldosaida['somasaldos'];
     }
     if ($filtro == "E") {
         $sql = $sqlentrada;
-        $sqltotalentrada = "SELECT SUM(e.valor) totalentrada FROM ip_pessoa p INNER JOIN ip_entrada e ON p.id = e.idpessoa WHERE " . $nomepessoas;
+        $sqltotalentrada = "SELECT SUM(e.valor) totalentrada FROM pm_pessoa p INNER JOIN pm_entrada e ON p.id = e.idpessoa WHERE " . $nomepessoas;
         $resultadoentrada = mysqli_query($con, $sqltotalentrada);
         $rowentrada = mysqli_fetch_assoc($resultadoentrada);
         $totalentradas = $rowentrada['totalentrada'];
-        $sqlsaldoanterior = "SELECT SUM(e.valor) somasaldoe FROM ip_entrada e WHERE e.dataentrada < '$pesqdata1'";
+        $sqlsaldoanterior = "SELECT SUM(e.valor) somasaldoe FROM pm_entrada e WHERE e.dataentrada < '$pesqdata1'";
         $resultadosaldo = mysqli_query($con, $sqlsaldoanterior);
         $rowsaldo = mysqli_fetch_assoc($resultadosaldo);
-        $sqlsaldoanteriorsaida = "SELECT SUM(s.valorpago) somasaldos FROM ip_saida s WHERE s.datapagar < '$pesqdata1'";
+        $sqlsaldoanteriorsaida = "SELECT SUM(s.valorpago) somasaldos FROM pm_saida s WHERE s.datapagar < '$pesqdata1'";
         $resultadosaldosaida = mysqli_query($con, $sqlsaldoanteriorsaida);
         $rowsaldosaida = mysqli_fetch_assoc($resultadosaldosaida);
         $saldoanterior = $rowsaldo['somasaldoe'] - $rowsaldosaida['somasaldos'];
