@@ -2,9 +2,14 @@
 session_start();
 include('verifica_login.php');
 include('connect.php');
-$sql = "SELECT 'Entrada' tipo, p.nome nome, replace(e.valor, '.', ',') valor, '-' valorpago, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') data, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.id id FROM pm_pessoa p INNER JOIN pm_entrada e ON p.id = e.idpessoa
+$sql = "SELECT 'Entrada' tipo, p.nome nome, m.nome empresa, replace(e.valor, '.', ',') valor, '-' valorpago, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') data, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.id id FROM pm_pessoa p 
+INNER JOIN pm_entrada e ON p.id = e.idpessoa
+INNER JOIN empresa m on m.id = e.idempresa
 UNION ALL
-SELECT 'Saída' tipo, f.nome nome, replace(s.valorpagar, '.', ',') valor, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapagar, '%d/%m/%Y') data, '-' datadocumento, s.id id FROM pm_fornecedor f INNER JOIN pm_saida s ON f.id = s.idfornecedor";
+SELECT 'Saída' tipo, f.nome nome, m.nome empresa, replace(s.valorpagar, '.', ',') valor, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapagar, '%d/%m/%Y') data, '-' datadocumento, s.id id FROM pm_fornecedor f 
+INNER JOIN pm_saida s ON f.id = s.idfornecedor
+INNER JOIN empresa m on m.id = s.idempresa
+";
 $sql2 = "SELECT SUM(s.valorpago) totalsaida FROM pm_saida s";
 $sql3 = "SELECT SUM(e.valor) totalentrada FROM pm_entrada e";
 $result = mysqli_query($con, $sql2);
@@ -13,6 +18,7 @@ $result2 = mysqli_query($con, $sql3);
 $row2 = mysqli_fetch_assoc($result2);
 $filtro = '';
 $pesqnome = '';
+$pesqempresa = '';
 $pesqdata1 = '';
 $pesqdata2 = '';
 $pesqdatadocumento1 = '';
@@ -31,6 +37,7 @@ $saldoreal = $saldoanterior + $saldoperiodo;
 if (isset($_POST['submit'])) {
     $filtro = $_POST['filtro'];
     $pesqnome = $_POST['pesqnome'];
+    $pesqempresa = $_POST['pesqempresa'];
     $pesqdata1 = $_POST['pesqdata1'];
     $pesqdata2 = $_POST['pesqdata2'];
     $pesqdatadocumento1 = $_POST['pesqdatadocumento1'];
@@ -162,6 +169,11 @@ if (isset($_POST['submit'])) {
                         <label for="">Nome Parcial:</label>
                         <input type="text" name="pesqnome" style="width: 300px; padding: 9px;" placeholder="José..."
                             value="<?php echo $pesqnome ?>">
+                    </div>
+                    <div class="col-7 text-right">
+                        <label for="">Empresa Parcial:</label>
+                        <input type="text" name="pesqempresa" style="width: 300px; padding: 9px;" placeholder="NASA..."
+                            value="<?php echo $pesqempresa ?>">
                     </div>
                     <div class="col text-left">
                         <label for="">Filtrar por:</label>
@@ -307,6 +319,7 @@ if (isset($_POST['submit'])) {
                     <tr>
                         <th scope="col">Tipo</th>
                         <th scope="col">Nome</th>
+                        <th scope="col">Empresa</th>
                         <th scope="col">Valor</th>
                         <th scope="col">Valor Pago</th>
                         <th scope="col">Data</th>
@@ -322,6 +335,7 @@ if (isset($_POST['submit'])) {
                             echo "<tr>
               <td>" . $row['tipo'] . " </td>
               <td>" . $row['nome'] . " </td>
+              <td>" . $row['empresa'] . " </td>
               <td>" . $row['valor'] . " </td>
               <td>" . $row['valorpago'] . "</td>
               <td>" . $row['data'] . " </td>

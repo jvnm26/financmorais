@@ -2,7 +2,11 @@
 session_start();
 include('verifica_login.php');
 include('connect.php');
-$sql = "SELECT e.id id, p.nome nome, e.valor valor, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') dataentrada, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.documento documento FROM ip_entrada e INNER JOIN ip_pessoa p ON p.id = e.idpessoa ORDER BY 1";
+$sql = "SELECT e.id id, p.nome nome, e.valor valor, e.idempresa empresa, DATE_FORMAT(e.dataentrada, '%d/%m/%Y') dataentrada, DATE_FORMAT(e.datadocumento, '%d/%m/%Y') datadocumento, e.documento documento 
+FROM pm_entrada e 
+INNER JOIN pm_pessoa p ON p.id = e.idpessoa
+INNER JOIN empresa em ON em.id = e.idempresa
+ORDER BY 1";
 $pesqnome = '';
 if (isset($_POST['submit'])) {
     $pesqnome = $_POST['pesqnome'];
@@ -76,6 +80,7 @@ if (isset($_POST['submit'])) {
                         <th scope="col">Código</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Valor</th>
+                        <th scope="col">Empresa</th>
                         <th scope="col">Data Entrada</th>
                         <th scope="col">Data Documento</th>
                         <th scope="col">Documento</th>
@@ -91,7 +96,8 @@ if (isset($_POST['submit'])) {
                             echo "<tr>
               <td>" . $row['id'] . " </td>
               <td>" . $row['nome'] . " </td>
-              <td>" . "R$ " . str_replace($valor,'.',',') . " </td>
+              <td>" . "R$" . $row['valor'] . " </td>
+              <td>" . $row['empresa'] . " </td>
               <td>" . $row['dataentrada'] . " </td>
               <td>" . $row['datadocumento'] . " </td>
               <td>" . $row['documento'] . " </td>

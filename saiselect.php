@@ -2,7 +2,9 @@
 session_start();
 include('verifica_login.php');
 include('connect.php');
-$sql = "SELECT s.id id, f.nome nome, replace(s.valorpagar, '.', ',') valorpagar, DATE_FORMAT(s.datapagar, '%d/%m/%Y') datapagar, s.observacao observacao, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapago, '%d/%m/%Y') datapago FROM ip_fornecedor f INNER JOIN ip_saida s ON f.id = s.idfornecedor ORDER BY 1";
+$sql = "SELECT s.id id, f.nome nome, m.nome empresa, replace(s.valorpagar, '.', ',') valorpagar, DATE_FORMAT(s.datapagar, '%d/%m/%Y') datapagar, s.observacao observacao, replace(s.valorpago, '.', ',') valorpago, DATE_FORMAT(s.datapago, '%d/%m/%Y') datapago FROM pm_fornecedor f 
+INNER JOIN pm_saida s ON f.id = s.idfornecedor
+INNER JOIN empresa m ON m.id = s.idempresa ORDER BY 1";
 $pesqnome = '';
 if (isset($_POST['submit'])) {
     $pesqnome = $_POST['pesqnome'];
@@ -76,6 +78,7 @@ if (isset($_POST['submit'])) {
                     <tr>
                         <th scope="col">Código</th>
                         <th scope="col">Nome</th>
+                        <th scope="col">Empresa</th>
                         <th scope="col">Valor Pagar</th>
                         <th scope="col">Data Pagar</th>
                         <th scope="col">Observação</th>
@@ -93,6 +96,7 @@ if (isset($_POST['submit'])) {
                             echo "<tr>
               <td>" . $row['id'] . " </td>
               <td>" . $row['nome'] . " </td>
+              <td>" . $row['empresa'] . " </td>
               <td>" . "R$" . $row['valorpagar'] . " </td>
               <td>" . $row['datapagar'] . " </td>
               <td>" . $row['observacao'] . " </td>
